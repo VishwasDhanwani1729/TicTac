@@ -36,10 +36,12 @@ public class MainClass {
         }
     }
     private String layout(){
-        StringBuilder temp= new StringBuilder(" ========== \n");
-        for(int i=0;i<3;i++) {
-            temp.append( " " + ox[i][0].value + " | " + ox[i][1].value + " | " + ox[i][2].value + " \n");
-            temp.append(" ========== \n");
+        StringBuilder temp= new StringBuilder("");
+        for(int i=0;i<boardLength;i++) {
+            temp.append("| ");
+            for(int j=0;j<boardLength;j++)
+                temp.append(ox[i][j].value+" | ");
+            temp.append("\n");
         }
         return String.valueOf(temp);
     }
@@ -68,11 +70,16 @@ public class MainClass {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Player-"+currentPlayer+"'s turn ["+OX.values()[currentPlayer]+"] : ");
         String position = scanner.nextLine();
-        int i= Integer.parseInt(position.substring(0,1));
-        int j =Integer.parseInt(position.substring(1));
-        if(j<0 || j>boardLength-1 || i<0 || i>boardLength-1) return false;
-        if(ox[i][j]!=OX.E || ox[i][j]==OX.values()[currentPlayer]) return false;
-        ox[i][j]=OX.values()[currentPlayer];
+        if(position.split(" ").length!=2) return false;
+        try {
+            int i = Integer.parseInt(position.split(" ")[0]);
+            int j = Integer.parseInt(position.split(" ")[1]);
+            if (j < 0 || j > boardLength - 1 || i < 0 || i > boardLength - 1) return false;
+            if (ox[i][j] != OX.E || ox[i][j] == OX.values()[currentPlayer]) return false;
+            ox[i][j] = OX.values()[currentPlayer];
+        }catch (NumberFormatException e){
+            return false;
+        }
         System.out.println(layout());
         return true;
     }

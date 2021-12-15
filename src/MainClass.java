@@ -2,54 +2,54 @@ import java.util.Scanner;
 
 public class MainClass {
     private enum Status{
-        none("NONE"),p1("Player1 Won"),p2("Player2 Won"),draw("DRAW");
+        NONE("None"),
+        PLAYER1("Player1 Won"),
+        PLAYER2("Player2 Won"),
+        DRAW("Draw");
         String value;
         Status(String s) {
             value = s;
         }
     }
-    private enum OX{E(" "),O("O"),X("X");
+    private enum OX{
+        E(" "),
+        O("O"),
+        X("X");
         String value;
         OX(){}
         OX(String s) {
             value=s;
         }
     }
-    enum test{a(1),b(2);
-        int value;
-        test(int i) {
-            value = i;
-        }
-    }
     private OX[][] ox={{OX.E,OX.E,OX.E},{OX.E,OX.E,OX.E},{OX.E,OX.E,OX.E}};
     private String layout(){
-        String temp=" ========== \n";
+        StringBuilder temp= new StringBuilder(" ========== \n");
         for(int i=0;i<3;i++) {
-            temp = temp + " " + ox[i][0].value + " | " + ox[i][1].value + " | " + ox[i][2].value + " \n";
-            temp += " ========== \n";
+            temp.append( " " + ox[i][0].value + " | " + ox[i][1].value + " | " + ox[i][2].value + " \n");
+            temp.append(" ========== \n");
         }
-        return temp;
+        return String.valueOf(temp);
     }
     private boolean winning(OX e){
-        int r,c,d1,d2;
-        r=c=d1=d2=0;
+        int row,column,diagonal1,diagonal2;
+        row=column=diagonal1=diagonal2=0;
         for(int i=0;i<3;i++){
-            r=c=0;
+            row=column=0;
             for(int j=0;j<3;j++){
                 if(ox[i][j] == e){
-                   r++;
+                   row++;
                 }
                 if(ox[j][i]==e){
-                    c++;
+                    column++;
                 }
             }
-            if(r==3 || c==3){
+            if(row==3 || column==3){
                 return true;
             }
-            if(ox[i][i]==e)d1++;
-            if(ox[i][2-i]==e)d2++;
+            if(ox[i][i]==e)diagonal1++;
+            if(ox[i][2-i]==e)diagonal2++;
         }
-        return d1==3 || d2==3;
+        return diagonal1==3 || diagonal2==3;
     }
     private boolean handlingInput(int currentPlayer){
         Scanner scanner = new Scanner(System.in);
@@ -64,19 +64,19 @@ public class MainClass {
         return true;
     }
     public void start(){
-        Status gameStatus = Status.none;
+        Status gameStatus = Status.NONE;
         int turn = 0;
         int currentPlayer=1;
 
         System.out.println("Player-1 [O] & Player-2 [X]\n");
         System.out.println("Input Range - [0,2]\n");
         System.out.println(layout());
-        while(gameStatus==Status.none && turn<4){
+        while(gameStatus==Status.NONE && turn<4){
             if(!handlingInput(currentPlayer)) continue;
             currentPlayer=3-currentPlayer;
             turn++;
         }
-        while(gameStatus==Status.none && turn<9){
+        while(gameStatus==Status.NONE && turn<9){
             if(!handlingInput(currentPlayer)) continue;
             if(winning(OX.values()[currentPlayer])){
                 gameStatus = Status.values()[currentPlayer];
@@ -86,8 +86,8 @@ public class MainClass {
             currentPlayer=3-currentPlayer;
             turn++;
         }
-        if(gameStatus==Status.none){
-            gameStatus = Status.draw;
+        if(gameStatus==Status.NONE){
+            gameStatus = Status.DRAW;
             System.out.println(gameStatus.value);
         }
     }

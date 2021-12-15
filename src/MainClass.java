@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MainClass {
@@ -21,7 +22,19 @@ public class MainClass {
             value=s;
         }
     }
-    private OX[][] ox={{OX.E,OX.E,OX.E},{OX.E,OX.E,OX.E},{OX.E,OX.E,OX.E}};
+    private final int boardLength;
+    private final OX[][] ox;
+
+    MainClass(int boardLength){
+        this.boardLength = boardLength;
+        ox= new OX[boardLength][];
+        for(int i=0;i<boardLength;i++) {
+            ox[i] = new OX[boardLength];
+            for (int j = 0; j < boardLength; j++) {
+                ox[i][j] = OX.E;
+            }
+        }
+    }
     private String layout(){
         StringBuilder temp= new StringBuilder(" ========== \n");
         for(int i=0;i<3;i++) {
@@ -57,7 +70,7 @@ public class MainClass {
         String position = scanner.nextLine();
         int i= Integer.parseInt(position.substring(0,1));
         int j =Integer.parseInt(position.substring(1));
-        if(j<0 || j>2 || i<0 || i>2) return false;
+        if(j<0 || j>boardLength-1 || i<0 || i>boardLength-1) return false;
         if(ox[i][j]!=OX.E || ox[i][j]==OX.values()[currentPlayer]) return false;
         ox[i][j]=OX.values()[currentPlayer];
         System.out.println(layout());
@@ -69,14 +82,15 @@ public class MainClass {
         int currentPlayer=1;
 
         System.out.println("Player-1 [O] & Player-2 [X]\n");
-        System.out.println("Input Range - [0,2]\n");
+        System.out.println("Input Range - [0,"+(boardLength-1)+"]\n");
         System.out.println(layout());
-        while(gameStatus==Status.NONE && turn<4){
+
+        while(gameStatus==Status.NONE && turn<boardLength+1){
             if(!handlingInput(currentPlayer)) continue;
             currentPlayer=3-currentPlayer;
             turn++;
         }
-        while(gameStatus==Status.NONE && turn<9){
+        while(gameStatus==Status.NONE && turn<boardLength*boardLength){
             if(!handlingInput(currentPlayer)) continue;
             if(winning(OX.values()[currentPlayer])){
                 gameStatus = Status.values()[currentPlayer];
@@ -91,7 +105,16 @@ public class MainClass {
             System.out.println(gameStatus.value);
         }
     }
+    public static void init_phase(){
+        Scanner scanner=new Scanner(System.in);
+        int boardLength=Integer.MIN_VALUE;
+        while(boardLength<3) {
+            System.out.print("Enter boardlength: ");
+            boardLength = scanner.nextInt();
+        }
+        new MainClass(boardLength).start();
+    }
     public static void main(String[] args) {
-        new MainClass().start();
+        init_phase();
     }
 }
